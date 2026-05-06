@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)file:///C:/Users/pierr/Downloads/Plus%20on%20the%20numberlines.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Number Lines with Miss Numby!</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden}
+
+body{
+  background:linear-gradient(170deg,#FF6F00 0%,#FFA726 15%,#FFCC02 30%,#66BB6A 50%,#42A5F5 70%,#AB47BC 85%,#EC407A 100%);
+  display:flex;flex-direction:column;align-items:center;
+  padding:10px 8px 30px;position:relative;
+}
+
+/* ── FLOATING DECORATIONS ── */
+.float-deco{position:fixed;pointer-events:none;opacity:0.1;font-size:clamp(28px,6vw,55px);z-index:0;animation:floatAround 18s ease-in-out infinite}
+@keyframes floatAround{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-20px) rotate(8deg)}50%{transform:translateY(5px) rotate(-5deg)}75%{transform:translateY(-12px) rotate(3deg)}}
+
+/* ── PASSWORD SCREEN ── */
+#passwordScreen{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:linear-gradient(170deg,#FF6F00 0%,#FFA726 15%,#FFCC02 30%,#66BB6A 50%,#42A5F5 70%,#AB47BC 85%,#EC407A 100%);
+  display:flex;align-items:center;justify-content:center;z-index:9999;
+}
+.pw-card{background:rgba(255,255,255,0.97);border-radius:24px;padding:36px 28px;max-width:380px;width:90%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,0.2)}
+.pw-card h2{font-family:'Fredoka One',cursive;color:#E65100;font-size:22px;margin-bottom:6px}
+.pw-card p{font-weight:700;color:#5D4037;font-size:14px;margin-bottom:18px}
+.pw-input{width:80%;padding:14px;border:3px solid #FFA726;border-radius:14px;font-family:'Fredoka One',cursive;font-size:22px;text-align:center;color:#E65100;outline:none;transition:border-color 0.3s}
+.pw-input:focus{border-color:#FF6F00}
+.pw-btn{display:block;margin:16px auto 0;padding:12px 40px;border:none;border-radius:50px;font-family:'Fredoka One',cursive;font-size:18px;color:white;cursor:pointer;background:linear-gradient(135deg,#43A047,#66BB6A);box-shadow:0 4px 16px rgba(67,160,71,0.4);transition:transform 0.2s}
+.pw-btn:hover{transform:scale(1.05)}
+.pw-error{color:#E53935;font-weight:800;font-size:13px;margin-top:10px;min-height:20px}
+
+/* ── MAIN CONTAINER ── */
+#app{width:100%;max-width:760px;position:relative;z-index:1;display:none}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,#FF8F00,#FFB300);border-radius:20px;padding:14px 20px;margin-bottom:14px;text-align:center;box-shadow:0 6px 28px rgba(255,143,0,0.4)}
+.header h1{font-family:'Fredoka One',cursive;font-size:clamp(16px,3.5vw,24px);color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,0.2)}
+.header p{font-size:clamp(11px,2vw,14px);color:#FFF8E1;font-weight:700;margin-top:4px}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{height:10px;background:rgba(255,255,255,0.3);border-radius:50px;margin:10px 0 14px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#FF8F00,#66BB6A);border-radius:50px;transition:width 0.8s ease;width:0%}
+
+/* ── PAUSE BUTTON ── */
+#pauseBtn{
+  position:fixed;bottom:20px;right:20px;z-index:1000;
+  width:60px;height:60px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,#E65100,#FF8F00);
+  color:white;font-size:24px;cursor:pointer;
+  box-shadow:0 6px 24px rgba(230,81,0,0.5);
+  transition:transform 0.2s;
+  display:none;
+}
+#pauseBtn:hover{transform:scale(1.1)}
+#pauseBtn.paused{background:linear-gradient(135deg,#2E7D32,#66BB6A);box-shadow:0 6px 24px rgba(46,125,50,0.5)}
+.pause-label{position:fixed;bottom:85px;right:12px;z-index:1000;font-family:'Fredoka One',cursive;font-size:11px;color:white;text-shadow:1px 1px 3px rgba(0,0,0,0.5);display:none;text-align:center;width:76px}
+
+/* ── SPEECH BUBBLE ── */
+.speech-area{background:linear-gradient(135deg,#FFF8E1,#FFF3C4);border:3px solid #FFB300;border-radius:8px 20px 20px 20px;padding:16px 20px;margin-bottom:14px;min-height:70px;box-shadow:0 4px 16px rgba(255,179,0,0.3)}
+.speech-label{font-family:'Fredoka One',cursive;font-size:12px;color:#FF8F00;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.speech-text{font-size:clamp(14px,2.2vw,17px);color:#3E2723;font-weight:700;line-height:1.7}
+
+/* ── ACTIVITY CARD ── */
+.activity-card{background:rgba(255,255,255,0.95);border-radius:20px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,0.1);margin-bottom:14px}
+.activity-title{font-family:'Fredoka One',cursive;font-size:clamp(15px,2.8vw,22px);color:#E65100;margin-bottom:16px;text-align:center;padding:8px 16px;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border-radius:12px}
+
+/* ── MISS NUMBY AVATAR ── */
+.numby-container{text-align:center;margin:10px 0}
+.numby-avatar{width:120px;height:120px;border-radius:50%;border:4px solid #FFB300;box-shadow:0 4px 16px rgba(255,179,0,0.4);overflow:hidden;margin:0 auto;background:#FFF3E0}
+
+/* ── ROTATE HINT ── */
+.rotate-hint{background:linear-gradient(135deg,#E1F5FE,#B3E5FC);border:3px solid #29B6F6;border-radius:16px;padding:14px 18px;margin:14px 0;text-align:center;font-weight:800;color:#01579B;font-size:clamp(13px,2.2vw,16px);line-height:1.5}
+.rotate-hint .rotate-icon{display:inline-block;font-size:28px;animation:rotateIcon 2.5s ease-in-out infinite;vertical-align:middle;margin-right:6px}
+@keyframes rotateIcon{0%,100%{transform:rotate(0deg)}50%{transform:rotate(90deg)}}
+
+/* ── SUM DISPLAY ── */
+.sum-display{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:14px 0;padding:16px;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border-radius:16px}
+.sum-num{font-family:'Fredoka One',cursive;font-size:clamp(32px,7vw,48px);color:#E65100}
+.sum-op{font-family:'Fredoka One',cursive;font-size:clamp(32px,7vw,48px);color:#5D4037}
+.sum-input{width:clamp(55px,12vw,75px);height:clamp(55px,12vw,75px);border:3px dashed #FFA726;border-radius:14px;font-family:'Fredoka One',cursive;font-size:clamp(28px,6vw,42px);text-align:center;color:#E65100;background:white;outline:none;transition:all 0.3s}
+.sum-input:focus{border-color:#FF6F00;background:#FFF8E1}
+.sum-input.correct{border-color:#43A047;background:#E8F5E9;color:#2E7D32;border-style:solid}
+.sum-input.wrong{border-color:#E53935;background:#FFEBEE;color:#C62828;animation:shake 0.4s ease}
+.sum-input::-webkit-outer-spin-button,.sum-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.sum-input[type=number]{-moz-appearance:textfield}
+@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}100%{transform:translateX(0)}}
+
+.answer-box{width:clamp(55px,12vw,75px);height:clamp(55px,12vw,75px);border:3px solid #5D4037;border-radius:14px;font-family:'Fredoka One',cursive;font-size:clamp(28px,6vw,42px);text-align:center;color:#2E7D32;background:white;display:flex;align-items:center;justify-content:center}
+.answer-box.filled{background:#E8F5E9;border-color:#43A047;animation:popIn 0.5s ease}
+@keyframes popIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+
+/* ── NUMBER LINE ── */
+.numberline-wrap{margin:20px 0;padding:14px 6px;background:#FFFFFF;border-radius:16px;box-shadow:inset 0 0 0 2px #F5F5F5;overflow:hidden}
+.numberline-svg{width:100%;height:auto;display:block;max-height:280px}
+
+.tap-instruction{text-align:center;font-family:'Fredoka One',cursive;font-size:clamp(13px,2.2vw,16px);color:#FF8F00;margin-top:10px;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+/* ── TRY AGAIN HINT ── */
+.try-again-hint{font-family:'Fredoka One',cursive;font-size:13px;color:#E53935;margin-top:8px;text-align:center;background:#FFEBEE;padding:8px;border-radius:10px;border:2px solid #FFCDD2}
+
+/* ── BUTTONS ── */
+.go-btn{padding:12px 32px;border:none;border-radius:50px;background:linear-gradient(135deg,#43A047,#66BB6A);color:white;font-family:'Fredoka One',cursive;font-size:clamp(15px,2.5vw,18px);cursor:pointer;box-shadow:0 4px 14px rgba(67,160,71,0.4);transition:transform 0.15s;display:block;margin:12px auto 0}
+.go-btn:hover{transform:scale(1.05)}
+.go-btn:disabled{opacity:0.4;cursor:default;transform:none}
+
+.next-btn{padding:14px 40px;border:none;border-radius:50px;background:linear-gradient(135deg,#FF8F00,#FFB300);color:white;font-family:'Fredoka One',cursive;font-size:clamp(16px,3vw,20px);cursor:pointer;box-shadow:0 6px 20px rgba(255,143,0,0.4);transition:transform 0.2s;display:block;margin:14px auto 0}
+.next-btn:hover{transform:scale(1.06)}
+
+/* ── RESULTS ── */
+.results-card{background:rgba(255,255,255,0.97);border-radius:20px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,0.1);text-align:center}
+.results-card h2{font-family:'Fredoka One',cursive;font-size:clamp(20px,4vw,28px);color:#E65100;margin-bottom:12px}
+.parent-message{margin-top:18px;padding:18px;background:#FFF8E1;border-radius:14px;border:2px solid #FFB300;text-align:left;font-size:clamp(13px,2vw,15px);font-weight:700;color:#5D4037;line-height:1.7}
+.password-display{margin-top:16px;padding:18px;background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border:3px solid #43A047;border-radius:14px;text-align:center}
+.password-display .pw-label{font-family:'Fredoka One',cursive;font-size:14px;color:#2E7D32;margin-bottom:6px}
+.password-display .pw-code{font-family:'Fredoka One',cursive;font-size:clamp(26px,5vw,36px);color:#1B5E20;letter-spacing:3px}
+
+/* ── SUMMARY SCENE ── */
+.summary-step{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding:14px 16px;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border-radius:16px;box-shadow:0 3px 10px rgba(255,143,0,0.15);animation:slideIn 0.5s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.summary-num{font-size:clamp(28px,5vw,36px);flex-shrink:0}
+.summary-text{font-weight:700;color:#3E2723;font-size:clamp(13px,2.2vw,16px);line-height:1.5}
+.parent-tip-box{margin-top:20px;padding:18px;background:linear-gradient(135deg,#E1F5FE,#B3E5FC);border:3px solid #29B6F6;border-radius:16px;box-shadow:0 4px 14px rgba(41,182,246,0.2)}
+.parent-tip-header{font-family:'Fredoka One',cursive;font-size:clamp(15px,2.5vw,18px);color:#01579B;margin-bottom:10px;text-align:center}
+.parent-tip-text{font-weight:700;color:#0D3F5C;font-size:clamp(13px,2vw,15px);line-height:1.7}
+
+/* ── START SCREEN ── */
+.start-screen{text-align:center;padding:20px}
+.start-btn{display:inline-block;margin-top:16px;padding:16px 48px;border:none;border-radius:50px;font-family:'Fredoka One',cursive;font-size:clamp(18px,3.5vw,24px);color:white;cursor:pointer;background:linear-gradient(135deg,#FF8F00,#FFB300);box-shadow:0 6px 24px rgba(255,143,0,0.5);transition:transform 0.2s;animation:pulse 2s ease-in-out infinite}
+.start-btn:hover{transform:scale(1.08)}
+
+/* ── SCENE MANAGEMENT ── */
+.scene{display:none}
+.scene.active{display:block}
+
+/* ── NUMBER LINE SVG STYLES ── */
+.nl-tick{stroke:#1A1A1A;stroke-width:2}
+.nl-axis{stroke:#1A1A1A;stroke-width:2.5;fill:none}
+.nl-num{font-family:'Nunito',sans-serif;font-weight:700;font-size:18px;fill:#1A1A1A;text-anchor:middle}
+.nl-tap-circle{fill:transparent;cursor:pointer;transition:fill 0.2s}
+.nl-tap-circle:hover{fill:rgba(255,143,0,0.15)}
+.nl-tap-circle.tapped{fill:rgba(255,143,0,0.25)}
+.nl-blue-arc{stroke:#1976D2;stroke-width:4.5;fill:none;stroke-linecap:round}
+.nl-pink-arc{stroke:#EC407A;stroke-width:4.5;fill:none;stroke-linecap:round}
+.nl-arrowhead-blue{fill:#1976D2}
+.nl-arrowhead-pink{fill:#EC407A}
+.nl-circle-answer{stroke:#EC407A;stroke-width:3.5;fill:none}
+
+/* Drawing animations */
+@keyframes drawArc{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+.nl-blue-arc.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:drawArc 0.9s ease-out forwards}
+.nl-pink-arc.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:drawArc 0.55s ease-out forwards}
+.nl-arrowhead-blue.appear,.nl-arrowhead-pink.appear{opacity:0;animation:fadeIn 0.3s ease-out 0.7s forwards}
+.nl-arrowhead-pink.appear-quick{opacity:0;animation:fadeIn 0.25s ease-out 0.5s forwards}
+.nl-circle-answer.draw{stroke-dasharray:200;stroke-dashoffset:200;animation:drawArc 0.7s ease-out forwards}
+@keyframes fadeIn{to{opacity:1}}
+</style>
+<style>.driver-active .driver-overlay,.driver-active *{pointer-events:none}.driver-active .driver-active-element,.driver-active .driver-active-element *,.driver-popover,.driver-popover *{pointer-events:auto}@keyframes animate-fade-in{0%{opacity:0}to{opacity:1}}.driver-fade .driver-overlay{animation:animate-fade-in .2s ease-in-out}.driver-fade .driver-popover{animation:animate-fade-in .2s}.driver-popover{all:unset;box-sizing:border-box;color:#2d2d2d;margin:0;padding:15px;border-radius:5px;min-width:250px;max-width:300px;box-shadow:0 1px 10px rgba(0,0,0,.4);z-index:1000000000;position:fixed;top:0;right:0;background-color:#fff}.driver-popover *{font-family:Helvetica Neue,Inter,ui-sans-serif,"Apple Color Emoji",Helvetica,Arial,sans-serif}.driver-popover-title{font:19px/normal sans-serif;font-weight:700;display:block;position:relative;line-height:1.5;zoom:1;margin:0}.driver-popover-close-btn{all:unset;position:absolute;top:0;right:0;width:32px;height:28px;cursor:pointer;font-size:18px;font-weight:500;color:#d2d2d2;z-index:1;text-align:center;transition:color;transition-duration:.2s}.driver-popover-close-btn:hover,.driver-popover-close-btn:focus{color:#2d2d2d}.driver-popover-title[style*=block]+.driver-popover-description{margin-top:5px}.driver-popover-description{margin-bottom:0;font:14px/normal sans-serif;line-height:1.5;font-weight:400;zoom:1}.driver-popover-footer{margin-top:15px;text-align:right;zoom:1;display:flex;align-items:center;justify-content:space-between}.driver-popover-progress-text{font-size:13px;font-weight:400;color:#727272;zoom:1}.driver-popover-footer button{all:unset;display:inline-block;box-sizing:border-box;padding:3px 7px;text-decoration:none;text-shadow:1px 1px 0 #fff;background-color:#fff;color:#2d2d2d;font:12px/normal sans-serif;cursor:pointer;outline:0;zoom:1;line-height:1.3;border:1px solid #ccc;border-radius:3px}.driver-popover-footer .driver-popover-btn-disabled{opacity:.5;pointer-events:none}:not(body):has(>.driver-active-element){overflow:hidden !important}.driver-no-interaction,.driver-no-interaction *{pointer-events:none !important}.driver-popover-footer button:hover,.driver-popover-footer button:focus{background-color:#f7f7f7}.driver-popover-navigation-btns{display:flex;flex-grow:1;justify-content:flex-end}.driver-popover-navigation-btns button+button{margin-left:4px}.driver-popover-arrow{content:"";position:absolute;border:5px solid #fff}.driver-popover-arrow-side-over{display:none}.driver-popover-arrow-side-left{left:100%;border-right-color:transparent;border-bottom-color:transparent;border-top-color:transparent}.driver-popover-arrow-side-right{right:100%;border-left-color:transparent;border-bottom-color:transparent;border-top-color:transparent}.driver-popover-arrow-side-top{top:100%;border-right-color:transparent;border-bottom-color:transparent;border-left-color:transparent}.driver-popover-arrow-side-bottom{bottom:100%;border-left-color:transparent;border-top-color:transparent;border-right-color:transparent}.driver-popover-arrow-side-center{display:none}.driver-popover-arrow-side-left.driver-popover-arrow-align-start,.driver-popover-arrow-side-right.driver-popover-arrow-align-start{top:15px}.driver-popover-arrow-side-top.driver-popover-arrow-align-start,.driver-popover-arrow-side-bottom.driver-popover-arrow-align-start{left:15px}.driver-popover-arrow-align-end.driver-popover-arrow-side-left,.driver-popover-arrow-align-end.driver-popover-arrow-side-right{bottom:15px}.driver-popover-arrow-side-top.driver-popover-arrow-align-end,.driver-popover-arrow-side-bottom.driver-popover-arrow-align-end{right:15px}.driver-popover-arrow-side-left.driver-popover-arrow-align-center,.driver-popover-arrow-side-right.driver-popover-arrow-align-center{top:50%;margin-top:-5px}.driver-popover-arrow-side-top.driver-popover-arrow-align-center,.driver-popover-arrow-side-bottom.driver-popover-arrow-align-center{left:50%;margin-left:-5px}.driver-popover-arrow-none{display:none}</style></head>
+<body>
+
+<!-- Floating decorations -->
+<div class="float-deco" style="top:6%;left:4%;animation-delay:0s">🌈</div>
+<div class="float-deco" style="top:18%;right:6%;animation-delay:2s">🌟</div>
+<div class="float-deco" style="top:40%;left:3%;animation-delay:4s">🎈</div>
+<div class="float-deco" style="top:60%;right:5%;animation-delay:6s">🦋</div>
+<div class="float-deco" style="top:78%;left:8%;animation-delay:8s">🌻</div>
+<div class="float-deco" style="top:30%;right:10%;animation-delay:10s">🎯</div>
+
+<!-- PASSWORD SCREEN -->
+<div id="passwordScreen">
+  <div class="pw-card">
+    <div style="font-size:48px;margin-bottom:10px">🔒</div>
+    <h2>Akili Learning</h2>
+    <p>Grade 1 — Number Lines</p>
+    <input type="password" class="pw-input" id="pwInput" placeholder="Password" maxlength="20" autocomplete="off">
+    <button class="pw-btn" onclick="checkPassword()">Enter</button>
+    <div class="pw-error" id="pwError"></div>
+  </div>
+</div>
+
+<!-- PAUSE BUTTON -->
+<button id="pauseBtn" onclick="togglePause()">⏸️</button>
+<div class="pause-label" id="pauseLabel">Pause</div>
+
+<div id="app">
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Number Lines with Miss Numby!</h1>
+    <p>Learn to add using a number line!</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <!-- SPEECH BUBBLE -->
+  <div class="speech-area">
+    <div class="speech-label">🎙️ Miss Numby says:</div>
+    <div class="speech-text" id="speechText">Getting ready...</div>
+  </div>
+
+  <!-- ═══ SCENE: START ═══ -->
+  <div class="scene active" id="scene-start">
+    <div class="activity-card start-screen">
+      <div class="numby-container">
+        <svg class="numby-avatar" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <!-- Hair back (long black hair) -->
+          <ellipse cx="60" cy="55" rx="44" ry="42" fill="#1A1A1A"></ellipse>
+          <!-- Hair long strands -->
+          <path d="M16,55 Q12,90 22,118" stroke="#1A1A1A" stroke-width="14" fill="none" stroke-linecap="round"></path>
+          <path d="M104,55 Q108,90 98,118" stroke="#1A1A1A" stroke-width="14" fill="none" stroke-linecap="round"></path>
+          <path d="M22,62 Q16,95 26,118" stroke="#0D0D0D" stroke-width="9" fill="none" stroke-linecap="round"></path>
+          <path d="M98,62 Q104,95 94,118" stroke="#0D0D0D" stroke-width="9" fill="none" stroke-linecap="round"></path>
+          <!-- Face (warm brown skin) -->
+          <ellipse cx="60" cy="60" rx="30" ry="32" fill="#C68863"></ellipse>
+          <!-- Eyes -->
+          <ellipse cx="48" cy="56" rx="4" ry="5" fill="#2E1A0F"></ellipse>
+          <ellipse cx="72" cy="56" rx="4" ry="5" fill="#2E1A0F"></ellipse>
+          <circle cx="49" cy="54" r="1.5" fill="white"></circle>
+          <circle cx="73" cy="54" r="1.5" fill="white"></circle>
+          <!-- Eyebrows -->
+          <path d="M42,49 Q48,45 54,49" stroke="#1A1A1A" stroke-width="2.2" fill="none" stroke-linecap="round"></path>
+          <path d="M66,49 Q72,45 78,49" stroke="#1A1A1A" stroke-width="2.2" fill="none" stroke-linecap="round"></path>
+          <!-- Smile -->
+          <path d="M47,70 Q60,82 73,70" stroke="#7A3823" stroke-width="2.5" fill="#EF5350" stroke-linecap="round"></path>
+          <!-- Cheeks -->
+          <circle cx="38" cy="66" r="5" fill="#E57373" opacity="0.45"></circle>
+          <circle cx="82" cy="66" r="5" fill="#E57373" opacity="0.45"></circle>
+          <!-- Bangs/fringe -->
+          <path d="M30,44 Q40,28 60,25 Q80,28 90,44 Q88,40 78,38 Q68,34 60,35 Q52,34 42,38 Q32,40 30,44Z" fill="#1A1A1A"></path>
+          <!-- Body/dress top -->
+          <path d="M33,90 Q60,86 87,90 Q92,102 87,118 L33,118 Q28,102 33,90Z" fill="#AB47BC"></path>
+          <circle cx="60" cy="94" r="3" fill="#FFD54F"></circle>
+          <!-- Earrings -->
+          <circle cx="28" cy="68" r="2.5" fill="#FFD54F"></circle>
+          <circle cx="92" cy="68" r="2.5" fill="#FFD54F"></circle>
+        </svg>
+      </div>
+      <h2 style="font-family:&#39;Fredoka One&#39;,cursive;color:#E65100;font-size:clamp(18px,3.5vw,24px);margin-top:10px">
+        Hello! I'm Miss Numby!
+      </h2>
+      <p style="font-weight:700;color:#5D4037;margin-top:10px;font-size:clamp(13px,2.2vw,16px);line-height:1.6">
+        Today we are going to learn about<br><strong style="color:#E65100;font-size:1.2em">NUMBER LINES!</strong><br>
+        Mommy or Daddy, please sit with your child.
+      </p>
+      <div class="rotate-hint">
+        <span class="rotate-icon">📱</span>
+        Please turn your phone <strong>sideways</strong><br>(auto-rotate ON) for the best view!
+      </div>
+      <button class="start-btn" id="startBtn" onclick="beginLesson()">
+        Let's Start!
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE: LESSON ═══ -->
+  <div class="scene" id="scene-lesson">
+    <div class="activity-card">
+      <div class="activity-title" id="lessonTitle">What is a Number Line?</div>
+      <div id="lessonContent"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE: SUMMARY ═══ -->
+  <div class="scene" id="scene-summary">
+    <div class="activity-card">
+      <div class="activity-title">📝 Let's Remember What We Learned!</div>
+
+      <div class="summary-step">
+        <div class="summary-num">1️⃣</div>
+        <div class="summary-text">First, write your <strong>sum</strong>. (For example: 3 + 2 = ___)</div>
+      </div>
+
+      <div class="summary-step">
+        <div class="summary-num">2️⃣</div>
+        <div class="summary-text">Use <strong style="color:#1976D2">BLUE</strong> to make <strong>one big jump</strong> from <strong>0</strong> to your <strong>first number</strong>. 🔵</div>
+      </div>
+
+      <div class="summary-step">
+        <div class="summary-num">3️⃣</div>
+        <div class="summary-text">Use <strong style="color:#EC407A">PINK</strong> to <strong>count on</strong> with <strong>small hops</strong>, one for each count. 🩷</div>
+      </div>
+
+      <div class="summary-step">
+        <div class="summary-num">4️⃣</div>
+        <div class="summary-text"><strong>Circle</strong> your answer in <strong style="color:#EC407A">pink</strong> and write it in the box! ⭕</div>
+      </div>
+
+      <div class="parent-tip-box">
+        <div class="parent-tip-header">👨‍👩‍👧 A Note for Mommy &amp; Daddy</div>
+        <div class="parent-tip-text">
+          Please <strong>repeat these exercises</strong> with your child <strong>a few times during the next week</strong>
+          until your child can do them <strong>automatically</strong>, without any help.<br><br>
+          Just a few minutes of practice every day works best! 🌟<br>
+          You can also draw your own number lines on paper and make up new sums together. ✏️
+        </div>
+      </div>
+
+      <button class="next-btn" id="finishBtn" style="display:none" onclick="goToResults()">All Done! 🎉</button>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE: RESULTS ═══ -->
+  <div class="scene" id="scene-results">
+    <div class="results-card">
+      <h2>🎉 Well done! 🎉</h2>
+      <p style="font-family:&#39;Fredoka One&#39;,cursive;font-size:clamp(18px,3.5vw,24px);color:#2E7D32;margin:14px 0">You finished the lesson!</p>
+      <div class="parent-message" id="parentMessage"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// PASSWORD
+// ══════════════════════════════════════════════════════
+const MONTHLY_PASSWORD = "bpnl05";
+
+function checkPassword(){
+  const input = document.getElementById('pwInput').value.trim().toLowerCase();
+  if(input === MONTHLY_PASSWORD){
+    document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initVoices();
+  } else {
+    document.getElementById('pwError').textContent = 'Incorrect password. Please try again.';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pwInput').addEventListener('keydown', e => { if(e.key === 'Enter') checkPassword(); });
+  document.getElementById('pwInput').focus();
+});
+
+// ══════════════════════════════════════════════════════
+// SPEECH SYNTHESIS — Kind, excited female voice with intonation
+// ══════════════════════════════════════════════════════
+let voices = [];
+let selectedVoice = null;
+let currentUtterance = null;
+let isPaused = false;
+let speechQueue = [];
+let onSpeechEnd = null;
+
+function initVoices(){
+  voices = speechSynthesis.getVoices();
+  if(voices.length === 0){
+    speechSynthesis.onvoiceschanged = () => {
+      voices = speechSynthesis.getVoices();
+      pickVoice();
+    };
+  } else {
+    pickVoice();
+  }
+}
+
+function pickVoice(){
+  // Prefer English female voices that sound natural
+  const preferred = [
+    'Google UK English Female',
+    'Microsoft Sonia',
+    'Microsoft Libby',
+    'Microsoft Aria',
+    'Microsoft Jenny',
+    'Samantha',
+    'Karen',
+    'Tessa',
+    'Moira'
+  ];
+  for(const name of preferred){
+    const v = voices.find(x => x.name.includes(name));
+    if(v){ selectedVoice = v; return; }
+  }
+  // Fallback: any English female
+  selectedVoice = voices.find(v => /en[-_]/i.test(v.lang) && /female|woman|girl|samantha|karen|sonia|aria|libby|jenny|moira|tessa/i.test(v.name))
+    || voices.find(v => /en[-_]/i.test(v.lang))
+    || voices[0];
+}
+
+// Speak with natural intonation - splits text at punctuation for varied prosody
+function speak(text, callback){
+  if(!('speechSynthesis' in window)){
+    if(callback) setTimeout(callback, 1500);
+    return;
+  }
+  speechSynthesis.cancel();
+  speechQueue = [];
+
+  // Split text by sentences for varied pitch/rate per sentence (creates intonation)
+  const segments = text.match(/[^.!?]+[.!?]?/g) || [text];
+
+  let idx = 0;
+  const speakNext = () => {
+    if(isPaused){
+      // Will be resumed by togglePause
+      return;
+    }
+    if(idx >= segments.length){
+      currentUtterance = null;
+      if(callback) callback();
+      return;
+    }
+    const seg = segments[idx].trim();
+    if(!seg){ idx++; speakNext(); return; }
+
+    const u = new SpeechSynthesisUtterance(seg);
+    if(selectedVoice) u.voice = selectedVoice;
+    u.lang = 'en-GB';
+
+    // Add intonation variation
+    const isQuestion = /\?$/.test(seg);
+    const isExclaim = /!$/.test(seg);
+    const isEmphasis = /\b(great|wonderful|excellent|well done|amazing|fantastic|super|good job|yes|now|remember)\b/i.test(seg);
+
+    // Slow rate for non-home-language learners
+    u.rate = 0.82;
+    if(isExclaim || isEmphasis) u.rate = 0.88;
+    if(seg.length < 10) u.rate = 0.78;
+
+    u.pitch = 1.15; // warm, kind
+    if(isQuestion) u.pitch = 1.25; // rising for questions
+    if(isExclaim || isEmphasis) u.pitch = 1.30; // excited
+
+    u.volume = 1.0;
+
+    u.onend = () => {
+      idx++;
+      speakNext();
+    };
+    u.onerror = () => {
+      idx++;
+      speakNext();
+    };
+
+    currentUtterance = u;
+    speechSynthesis.speak(u);
+  };
+
+  speakNext();
+}
+
+function stopSpeech(){
+  speechSynthesis.cancel();
+  currentUtterance = null;
+}
+
+// ══════════════════════════════════════════════════════
+// PAUSE / PLAY
+// ══════════════════════════════════════════════════════
+let pauseResumeFn = null;       // function to call to resume current step
+let pauseTimeoutId = null;       // pending setTimeout id
+let pauseTimeoutCallback = null; // pending callback
+let pauseTimeoutRemaining = 0;
+let pauseTimeoutStart = 0;
+
+function safeTimeout(callback, delay){
+  // Wraps setTimeout so pause/play works
+  pauseTimeoutCallback = callback;
+  pauseTimeoutRemaining = delay;
+  pauseTimeoutStart = Date.now();
+  pauseTimeoutId = setTimeout(() => {
+    pauseTimeoutId = null;
+    pauseTimeoutCallback = null;
+    callback();
+  }, delay);
+}
+
+function togglePause(){
+  const btn = document.getElementById('pauseBtn');
+  const lbl = document.getElementById('pauseLabel');
+  if(!isPaused){
+    // PAUSE
+    isPaused = true;
+    btn.textContent = '▶️';
+    btn.classList.add('paused');
+    lbl.textContent = 'Play';
+
+    // Pause speech
+    if(speechSynthesis.speaking) speechSynthesis.pause();
+
+    // Pause any pending timeout
+    if(pauseTimeoutId){
+      clearTimeout(pauseTimeoutId);
+      pauseTimeoutId = null;
+      const elapsed = Date.now() - pauseTimeoutStart;
+      pauseTimeoutRemaining = Math.max(0, pauseTimeoutRemaining - elapsed);
+    }
+  } else {
+    // RESUME
+    isPaused = false;
+    btn.textContent = '⏸️';
+    btn.classList.remove('paused');
+    lbl.textContent = 'Pause';
+
+    // Resume speech
+    if(speechSynthesis.paused){
+      speechSynthesis.resume();
+    }
+
+    // Resume timeout if any
+    if(pauseTimeoutCallback && pauseTimeoutRemaining > 0){
+      const cb = pauseTimeoutCallback;
+      const rem = pauseTimeoutRemaining;
+      pauseTimeoutCallback = null;
+      pauseTimeoutRemaining = 0;
+      pauseTimeoutId = setTimeout(() => {
+        pauseTimeoutId = null;
+        cb();
+      }, rem);
+      pauseTimeoutStart = Date.now();
+    }
+  }
+}
+
+function showPauseButton(){
+  document.getElementById('pauseBtn').style.display = 'block';
+  document.getElementById('pauseLabel').style.display = 'block';
+}
+
+// ══════════════════════════════════════════════════════
+// SCENE / SPEECH HELPERS
+// ══════════════════════════════════════════════════════
+function showScene(id){
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.getElementById('scene-' + id).classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function setSpeech(text){
+  document.getElementById('speechText').textContent = text;
+}
+
+// Combined: show text + speak it
+function say(text, callback){
+  setSpeech(text);
+  speak(text, callback);
+}
+
+function setProgress(pct){
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+// ══════════════════════════════════════════════════════
+// LESSON FLOW
+// ══════════════════════════════════════════════════════
+function beginLesson(){
+  // Warm up speech synthesis — REQUIRED for mobile browsers (iOS Safari, Chrome mobile)
+  // The very first speech call MUST happen synchronously inside a user gesture handler,
+  // otherwise mobile browsers block all subsequent speech.
+  try {
+    const warmup = new SpeechSynthesisUtterance(' ');
+    warmup.volume = 0;
+    warmup.rate = 1;
+    speechSynthesis.speak(warmup);
+  } catch(e){}
+
+  showPauseButton();
+  showScene('lesson');
+  setProgress(5);
+
+  // Brief delay so the warm-up registers before the real speech starts
+  safeTimeout(() => {
+    introduceNumberLine();
+  }, 250);
+}
+
+// ─── INTRO: What is a number line? ────────────────────
+function introduceNumberLine(){
+  document.getElementById('lessonTitle').textContent = 'What is a Number Line?';
+  document.getElementById('lessonContent').innerHTML = `
+    <div class="numberline-wrap" id="introNL"></div>
+    <button class="next-btn" id="nextIntro" style="display:none" onclick="goToExample1()">Continue ➡️</button>
+  `;
+  drawBlankNumberLine('introNL', 0, 6);
+
+  const text = "A number line is exactly what the word says! It is a line with numbers on it that we use to count on, or count back. Look! Here is a number line. It has zero, one, two, three, four, five, six. And there are arrows on both sides.";
+  say(text, () => {
+    document.getElementById('nextIntro').style.display = 'block';
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// EXAMPLE 1: 3 + 2 (demonstration)
+// ══════════════════════════════════════════════════════
+function goToExample1(){
+  setProgress(20);
+  document.getElementById('lessonTitle').textContent = 'Example 1: 3 add 2';
+  document.getElementById('lessonContent').innerHTML = `
+    <div class="sum-display" id="sumDisplay1">
+      <span class="sum-num">3</span>
+      <span class="sum-op">+</span>
+      <span class="sum-num">2</span>
+      <span class="sum-op">=</span>
+      <div class="answer-box" id="answerBox1"></div>
+    </div>
+    <div class="numberline-wrap" id="ex1NL"></div>
+    <button class="next-btn" id="nextEx1" style="display:none" onclick="goToExample2()">Continue ➡️</button>
+  `;
+  drawBlankNumberLine('ex1NL', 0, 10);
+
+  say("Example one. Three add two. We first have to write this as a sum. Can you remember what the word add means? Yes! We put everything together! So we have to count on, and we write a plus sum, like this. Three plus two equals.", () => {
+    say("Now we are going to show this on our number line. Our first number is three. We will use blue to count from zero to three with one big jump.", () => {
+      // Draw blue arc 0 -> 3
+      animateBlueArc('ex1NL', 0, 3, () => {
+        say("Now we count on two. We will use pink. Start at three. Count on, one, two.", () => {
+          // Draw pink arcs 3->4, 4->5
+          animatePinkArc('ex1NL', 3, 4, false, () => {
+            safeTimeout(() => {
+              animatePinkArc('ex1NL', 4, 5, true, () => {
+                say("Now we circle five with our pink. And there is our answer! Three add two is five.", () => {
+                  drawCircleAroundNumber('ex1NL', 5);
+                  // Fill in answer box
+                  const box = document.getElementById('answerBox1');
+                  box.textContent = '5';
+                  box.classList.add('filled');
+                  safeTimeout(() => {
+                    say("Three plus two equals five.", () => {
+                      document.getElementById('nextEx1').style.display = 'block';
+                    });
+                  }, 800);
+                });
+              });
+            }, 600);
+          });
+        });
+      });
+    });
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// EXAMPLE 2: 2 + 2 (demonstration)
+// ══════════════════════════════════════════════════════
+function goToExample2(){
+  setProgress(35);
+  document.getElementById('lessonTitle').textContent = 'Example 2: 2 add 2';
+  document.getElementById('lessonContent').innerHTML = `
+    <div class="sum-display" id="sumDisplay2">
+      <span class="sum-num">2</span>
+      <span class="sum-op">+</span>
+      <span class="sum-num">2</span>
+      <span class="sum-op">=</span>
+      <div class="answer-box" id="answerBox2"></div>
+    </div>
+    <div class="numberline-wrap" id="ex2NL"></div>
+    <button class="next-btn" id="nextEx2" style="display:none" onclick="goToActivity1()">Continue ➡️</button>
+  `;
+  drawBlankNumberLine('ex2NL', 0, 10);
+
+  say("Example two. Two add two. First, we write our sum. Two plus two equals.", () => {
+    say("Now we show this on our number line. Our first number is two. We use blue to count from zero to two with one big jump.", () => {
+      animateBlueArc('ex2NL', 0, 2, () => {
+        say("Now we count on two. We use pink. Start at two. Count on, one, two.", () => {
+          animatePinkArc('ex2NL', 2, 3, false, () => {
+            safeTimeout(() => {
+              animatePinkArc('ex2NL', 3, 4, true, () => {
+                say("Now we circle four with our pink. And there is our answer! Two add two is four.", () => {
+                  drawCircleAroundNumber('ex2NL', 4);
+                  const box = document.getElementById('answerBox2');
+                  box.textContent = '4';
+                  box.classList.add('filled');
+                  safeTimeout(() => {
+                    say("Two plus two equals four. Now it is your turn!", () => {
+                      document.getElementById('nextEx2').style.display = 'block';
+                    });
+                  }, 800);
+                });
+              });
+            }, 600);
+          });
+        });
+      });
+    });
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// ACTIVITY 1: 2 + 3 (child does it with help)
+// ══════════════════════════════════════════════════════
+function goToActivity1(){
+  setProgress(50);
+  startActivity({
+    num1: 2,
+    num2: 3,
+    answer: 5,
+    title: 'Your turn! 2 add 3',
+    isLast: false,
+    introText: "Now you try! Two add three. First, write your sum. Type the numbers in the boxes. Two plus three equals.",
+    afterSumText: "Wonderful! Now you are going to bounce on the number line. Remember which colour we use first, and where we start counting. Always count from zero to your first number. Your first number is two. Tap on zero, and then tap on two.",
+    afterFirstNumText: "Well done! Now we count on three. We hop three times, and we count on while we hop. We are using pink now. Start from two. Tap on each number as you count. Remember to start at two. Tap on two first.",
+    afterCountText: "Great job!",
+    nextFn: goToActivity2
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// ACTIVITY 2: 3 + 1
+// ══════════════════════════════════════════════════════
+function goToActivity2(){
+  setProgress(70);
+  startActivity({
+    num1: 3,
+    num2: 1,
+    answer: 4,
+    title: 'Your turn! 3 add 1',
+    isLast: false,
+    introText: "Three add one. First, write your sum. Type the numbers in the boxes. Three plus one equals.",
+    afterSumText: "Well done! Now you bounce on the number line. Remember to count from zero to your first number. Your first number is three. Tap on zero, and then tap on three.",
+    afterFirstNumText: "Wonderful! Now we count on one. We hop one time. We are using pink. Start from three. Tap on three first, and then tap on four.",
+    afterCountText: "Great job!",
+    nextFn: goToActivity3
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// ACTIVITY 3: 1 + 3 (child on their own)
+// ══════════════════════════════════════════════════════
+function goToActivity3(){
+  setProgress(85);
+  startActivity({
+    num1: 1,
+    num2: 3,
+    answer: 4,
+    title: 'Last one! Try by yourself: 1 add 3',
+    isLast: true,
+    introText: "Now you try the last one all by yourself! One add three. Mommy or Daddy, please just check if your child can do it. First, write your sum.",
+    afterSumText: "Well done! Now bounce on the number line. Remember everything we learned!",
+    afterFirstNumText: "Wonderful! Now count on, using pink.",
+    afterCountText: "Excellent! You did it!",
+    nextFn: goToSummary
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// ACTIVITY ENGINE
+// ══════════════════════════════════════════════════════
+function startActivity(cfg){
+  document.getElementById('lessonTitle').textContent = cfg.title;
+  document.getElementById('lessonContent').innerHTML = `
+    <div class="sum-display">
+      <input type="number" class="sum-input" id="sumA" min="0" max="9" inputmode="numeric">
+      <span class="sum-op">+</span>
+      <input type="number" class="sum-input" id="sumB" min="0" max="9" inputmode="numeric">
+      <span class="sum-op">=</span>
+      <div class="answer-box" id="answerBoxA"></div>
+    </div>
+    <button class="go-btn" id="checkSumBtn" onclick="checkSum()">Check Sum ✓</button>
+    <div id="sumHint"></div>
+    <div class="numberline-wrap" id="actNL" style="display:none"></div>
+    <div id="tapHint"></div>
+    <button class="next-btn" id="nextActBtn" style="display:none">Continue ➡️</button>
+  `;
+
+  // Store activity state
+  window.currentActivity = {
+    ...cfg,
+    sumChecked: false,
+    sumAttempts: 0,
+    blueDrawn: false,
+    pinkSteps: [], // numbers tapped after first
+    expectedTaps: [cfg.num1, ...Array.from({length: cfg.num2}, (_, i) => cfg.num1 + i + 1)],
+    tapIdx: 0
+  };
+
+  drawBlankNumberLine('actNL', 0, 10);
+
+  say(cfg.introText, () => {
+    document.getElementById('sumA').focus();
+  });
+}
+
+function checkSum(){
+  const act = window.currentActivity;
+  const a = parseInt(document.getElementById('sumA').value);
+  const b = parseInt(document.getElementById('sumB').value);
+  const inputA = document.getElementById('sumA');
+  const inputB = document.getElementById('sumB');
+
+  inputA.classList.remove('correct','wrong');
+  inputB.classList.remove('correct','wrong');
+
+  if(a === act.num1 && b === act.num2){
+    inputA.classList.add('correct');
+    inputB.classList.add('correct');
+    inputA.disabled = true;
+    inputB.disabled = true;
+    document.getElementById('checkSumBtn').style.display = 'none';
+    document.getElementById('sumHint').innerHTML = '';
+    act.sumChecked = true;
+    document.getElementById('actNL').style.display = 'block';
+
+    say(act.afterSumText, () => {
+      document.getElementById('tapHint').innerHTML = '<div class="tap-instruction">👉 Tap zero, then tap ' + act.num1 + '</div>';
+      enableTapping();
+    });
+  } else {
+    if(a !== act.num1) inputA.classList.add('wrong');
+    if(b !== act.num2) inputB.classList.add('wrong');
+    act.sumAttempts++;
+    document.getElementById('sumHint').innerHTML = '<div class="try-again-hint">⚠️ Oops, think carefully! Try again.</div>';
+    say("Oops, think carefully. Mommy or Daddy, please make sure your child types the correct sum.", () => {
+      // Clear wrong inputs after a moment
+      safeTimeout(() => {
+        if(a !== act.num1){ inputA.value = ''; inputA.classList.remove('wrong'); }
+        if(b !== act.num2){ inputB.value = ''; inputB.classList.remove('wrong'); }
+        document.getElementById('sumHint').innerHTML = '';
+        inputA.focus();
+      }, 2500);
+    });
+  }
+}
+
+// ── Tap interaction on number line ──────────────────
+function enableTapping(){
+  const svg = document.querySelector('#actNL svg');
+  if(!svg) return;
+  svg.querySelectorAll('.nl-tap-circle').forEach(c => {
+    c.style.pointerEvents = 'auto';
+    c.addEventListener('click', handleTap);
+  });
+}
+
+function disableTapping(){
+  const svg = document.querySelector('#actNL svg');
+  if(!svg) return;
+  svg.querySelectorAll('.nl-tap-circle').forEach(c => {
+    c.style.pointerEvents = 'none';
+  });
+}
+
+function handleTap(e){
+  const act = window.currentActivity;
+  const num = parseInt(e.target.getAttribute('data-num'));
+
+  if(!act.blueDrawn){
+    // Phase 1: Tap zero, then tap first number
+    if(act.tapIdx === 0){
+      // Expecting tap on 0
+      if(num === 0){
+        e.target.classList.add('tapped');
+        act.tapIdx = 1;
+        document.getElementById('tapHint').innerHTML = '<div class="tap-instruction">👉 Now tap ' + act.num1 + '</div>';
+      } else {
+        say("Oops! Tap on zero first.");
+      }
+    } else if(act.tapIdx === 1){
+      // Expecting tap on num1
+      if(num === act.num1){
+        e.target.classList.add('tapped');
+        document.getElementById('tapHint').innerHTML = '';
+        disableTapping();
+        animateBlueArc('actNL', 0, act.num1, () => {
+          act.blueDrawn = true;
+          act.tapIdx = 0;
+          say(act.afterFirstNumText, () => {
+            document.getElementById('tapHint').innerHTML = '<div class="tap-instruction">👉 Tap on ' + act.num1 + ' first!</div>';
+            enableTapping();
+          });
+        });
+      } else {
+        say("Oops! Tap on " + act.num1 + ".");
+      }
+    }
+  } else {
+    // Phase 2: pink hops - tap num1, then num1+1, num1+2, etc.
+    const expected = act.expectedTaps[act.tapIdx];
+    if(num === expected){
+      if(act.tapIdx === 0){
+        // First tap of pink phase = the start (num1) - already tapped, no arc
+        e.target.classList.add('tapped');
+        act.tapIdx++;
+        document.getElementById('tapHint').innerHTML = '<div class="tap-instruction">👉 Now tap ' + act.expectedTaps[act.tapIdx] + '</div>';
+      } else {
+        // Subsequent taps draw a pink arc from previous number to this one
+        e.target.classList.add('tapped');
+        const fromNum = act.expectedTaps[act.tapIdx - 1];
+        const toNum = num;
+        const isLastHop = (act.tapIdx === act.expectedTaps.length - 1);
+        disableTapping();
+        animatePinkArc('actNL', fromNum, toNum, isLastHop, () => {
+          act.tapIdx++;
+          if(act.tapIdx >= act.expectedTaps.length){
+            // Done! Circle answer, fill box, move on
+            safeTimeout(() => {
+              drawCircleAroundNumber('actNL', act.answer);
+              const box = document.getElementById('answerBoxA');
+              box.textContent = act.answer;
+              box.classList.add('filled');
+              safeTimeout(() => {
+                say(act.afterCountText + " " + act.num1 + " plus " + act.num2 + " equals " + act.answer + "!", () => {
+                  document.getElementById('tapHint').innerHTML = '';
+                  document.getElementById('nextActBtn').style.display = 'block';
+                  document.getElementById('nextActBtn').onclick = act.nextFn;
+                });
+              }, 600);
+            }, 400);
+          } else {
+            document.getElementById('tapHint').innerHTML = '<div class="tap-instruction">👉 Now tap ' + act.expectedTaps[act.tapIdx] + '</div>';
+            enableTapping();
+          }
+        });
+      }
+    } else {
+      say("Oops! Tap on " + expected + ".");
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// NUMBER LINE DRAWING
+// ══════════════════════════════════════════════════════
+function drawBlankNumberLine(containerId, minN, maxN){
+  const container = document.getElementById(containerId);
+  const nNumbers = maxN - minN + 1;
+  // Layout: leave room on both sides for arrows
+  const leftPad = 40;
+  const rightPad = 40;
+  const topPad = 100;     // space above the line for arcs
+  const bottomPad = 50;   // space below for numbers
+  const width = 700;
+  const height = topPad + bottomPad + 20;
+  const lineY = topPad;
+  const usableW = width - leftPad - rightPad;
+  const spacing = usableW / (nNumbers - 1);
+
+  // Build SVG
+  let svg = `<svg class="numberline-svg" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">`;
+
+  // Arrow markers
+  svg += `<defs>
+    <marker id="arrowL_${containerId}" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M10,0 L0,5 L10,10 z" fill="#1A1A1A"/>
+    </marker>
+    <marker id="arrowR_${containerId}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1A1A1A"/>
+    </marker>
+  </defs>`;
+
+  // Main horizontal line with arrows on both ends
+  const lineStart = leftPad - 20;
+  const lineEnd = width - rightPad + 20;
+  svg += `<line class="nl-axis" x1="${lineStart}" y1="${lineY}" x2="${lineEnd}" y2="${lineY}" marker-start="url(#arrowL_${containerId})" marker-end="url(#arrowR_${containerId})"/>`;
+
+  // Tick marks and numbers
+  for(let i = 0; i < nNumbers; i++){
+    const n = minN + i;
+    const x = leftPad + spacing * i;
+    // Tick
+    svg += `<line class="nl-tick" x1="${x}" y1="${lineY - 10}" x2="${x}" y2="${lineY + 10}"/>`;
+    // Number label below
+    svg += `<text class="nl-num" x="${x}" y="${lineY + 32}">${n}</text>`;
+    // Invisible tap circle (larger hit area)
+    svg += `<circle class="nl-tap-circle" cx="${x}" cy="${lineY}" r="22" data-num="${n}" style="pointer-events:none"/>`;
+  }
+
+  // Layer for arcs (initially empty)
+  svg += `<g id="arcs_${containerId}"></g>`;
+
+  svg += `</svg>`;
+  container.innerHTML = svg;
+
+  // Save spacing info on container for arc drawing
+  container._nlInfo = { leftPad, lineY, spacing, minN, maxN, width, height };
+}
+
+function getNumberX(containerId, num){
+  const info = document.getElementById(containerId)._nlInfo;
+  return info.leftPad + info.spacing * (num - info.minN);
+}
+
+function getLineY(containerId){
+  return document.getElementById(containerId)._nlInfo.lineY;
+}
+
+// Big blue arc from `from` to `to` (one big jump from 0 to first number)
+function animateBlueArc(containerId, from, to, callback){
+  const x1 = getNumberX(containerId, from);
+  const x2 = getNumberX(containerId, to);
+  const y = getLineY(containerId);
+  const arcHeight = Math.min(70, 18 + (to - from) * 8);
+  const cx = (x1 + x2) / 2;
+  const cyControl = y - arcHeight - arcHeight*0.4;
+
+  // Stop the arc 8px short of the line so there's room for the arrowhead.
+  // We achieve this by ending the arc at a parameter t < 1 along the quadratic curve.
+  // For a quadratic Bezier P0 P1 P2, point at t = (1-t)^2*P0 + 2(1-t)t*P1 + t^2*P2
+  // We want the endpoint to be ~8px above line y. Use t = 0.93 which lands close to the line.
+  const tEnd = 0.93;
+  const oneMt = 1 - tEnd;
+  const endX = oneMt*oneMt*x1 + 2*oneMt*tEnd*cx + tEnd*tEnd*x2;
+  const endY = oneMt*oneMt*y + 2*oneMt*tEnd*cyControl + tEnd*tEnd*y;
+
+  // Tangent vector at tEnd: derivative = 2(1-t)(P1-P0) + 2t(P2-P1)
+  const tangentX = 2*oneMt*(cx - x1) + 2*tEnd*(x2 - cx);
+  const tangentY = 2*oneMt*(cyControl - y) + 2*tEnd*(y - cyControl);
+  const tangentLen = Math.sqrt(tangentX*tangentX + tangentY*tangentY);
+  const ux = tangentX / tangentLen;
+  const uy = tangentY / tangentLen;
+  // Perpendicular unit vector
+  const px = -uy;
+  const py = ux;
+
+  // Arc path stops short of the line
+  const d = `M ${x1} ${y} Q ${cx} ${cyControl} ${endX} ${endY}`;
+
+  const dx = x2 - x1;
+  const len = Math.PI * Math.sqrt((dx*dx)/2 + arcHeight*arcHeight) * 0.7;
+
+  const arcsG = document.getElementById('arcs_' + containerId);
+  const ns = 'http://www.w3.org/2000/svg';
+
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('d', d);
+  path.setAttribute('class', 'nl-blue-arc draw');
+  path.style.setProperty('--len', len);
+  arcsG.appendChild(path);
+
+  // Proper arrowhead: tip at the number on the line, pointing along the curve tangent.
+  // Tip = on the line, just touching the number from above
+  const tipX = x2;
+  const tipY = y - 1;
+  // Base of arrowhead is back along the tangent direction (i.e., back up the curve)
+  const arrowLen = 12;
+  const arrowWidth = 8;
+  const baseX = tipX - ux * arrowLen;
+  const baseY = tipY - uy * arrowLen;
+  const leftX = baseX + px * arrowWidth;
+  const leftY = baseY + py * arrowWidth;
+  const rightX = baseX - px * arrowWidth;
+  const rightY = baseY - py * arrowWidth;
+
+  const arrowhead = document.createElementNS(ns, 'path');
+  arrowhead.setAttribute('d', `M ${tipX} ${tipY} L ${leftX} ${leftY} L ${rightX} ${rightY} Z`);
+  arrowhead.setAttribute('class', 'nl-arrowhead-blue appear');
+  arcsG.appendChild(arrowhead);
+
+  safeTimeout(() => {
+    if(callback) callback();
+  }, 1100);
+}
+
+// Small pink arc for one count-on hop
+function animatePinkArc(containerId, from, to, isLast, callback){
+  const x1 = getNumberX(containerId, from);
+  const x2 = getNumberX(containerId, to);
+  const y = getLineY(containerId);
+  const arcHeight = 28;
+  const cx = (x1 + x2) / 2;
+  const cyControl = y - arcHeight - arcHeight*0.4;
+
+  // For the last hop, end the arc short so we can place a proper arrowhead.
+  // For non-last hops, draw the full arc all the way down to the line.
+  const tEnd = isLast ? 0.88 : 1.0;
+  const oneMt = 1 - tEnd;
+  const endX = oneMt*oneMt*x1 + 2*oneMt*tEnd*cx + tEnd*tEnd*x2;
+  const endY = oneMt*oneMt*y + 2*oneMt*tEnd*cyControl + tEnd*tEnd*y;
+
+  const d = `M ${x1} ${y} Q ${cx} ${cyControl} ${endX} ${endY}`;
+  const dx = x2 - x1;
+  const len = Math.PI * Math.sqrt((dx*dx)/2 + arcHeight*arcHeight) * 0.7;
+
+  const arcsG = document.getElementById('arcs_' + containerId);
+  const ns = 'http://www.w3.org/2000/svg';
+
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('d', d);
+  path.setAttribute('class', 'nl-pink-arc draw');
+  path.style.setProperty('--len', len);
+  arcsG.appendChild(path);
+
+  // Arrowhead only on last hop — proper angled arrow pointing to the number
+  if(isLast){
+    // Tangent vector at tEnd
+    const tangentX = 2*oneMt*(cx - x1) + 2*tEnd*(x2 - cx);
+    const tangentY = 2*oneMt*(cyControl - y) + 2*tEnd*(y - cyControl);
+    const tangentLen = Math.sqrt(tangentX*tangentX + tangentY*tangentY);
+    const ux = tangentX / tangentLen;
+    const uy = tangentY / tangentLen;
+    const px = -uy;
+    const py = ux;
+
+    const tipX = x2;
+    const tipY = y - 1;
+    const arrowLen = 10;
+    const arrowWidth = 6.5;
+    const baseX = tipX - ux * arrowLen;
+    const baseY = tipY - uy * arrowLen;
+    const leftX = baseX + px * arrowWidth;
+    const leftY = baseY + py * arrowWidth;
+    const rightX = baseX - px * arrowWidth;
+    const rightY = baseY - py * arrowWidth;
+
+    const arrowhead = document.createElementNS(ns, 'path');
+    arrowhead.setAttribute('d', `M ${tipX} ${tipY} L ${leftX} ${leftY} L ${rightX} ${rightY} Z`);
+    arrowhead.setAttribute('class', 'nl-arrowhead-pink appear-quick');
+    arcsG.appendChild(arrowhead);
+  }
+
+  safeTimeout(() => {
+    if(callback) callback();
+  }, 750);
+}
+
+// Pink circle drawn around the answer number
+function drawCircleAroundNumber(containerId, num){
+  const x = getNumberX(containerId, num);
+  const info = document.getElementById(containerId)._nlInfo;
+  const y = info.lineY + 32; // text position
+  const arcsG = document.getElementById('arcs_' + containerId);
+  const ns = 'http://www.w3.org/2000/svg';
+
+  const circle = document.createElementNS(ns, 'ellipse');
+  circle.setAttribute('cx', x);
+  circle.setAttribute('cy', y - 5);
+  circle.setAttribute('rx', 14);
+  circle.setAttribute('ry', 13);
+  circle.setAttribute('class', 'nl-circle-answer draw');
+  arcsG.appendChild(circle);
+}
+
+// ══════════════════════════════════════════════════════
+// SUMMARY
+// ══════════════════════════════════════════════════════
+function goToSummary(){
+  setProgress(95);
+  showScene('summary');
+
+  const summaryText = "Wonderful work! Let's remember what we learned today. " +
+    "Step one: First, we write our sum. " +
+    "Step two: We use blue to make one big jump from zero to our first number. " +
+    "Step three: We use pink to count on with small hops. " +
+    "And step four: We circle our answer in pink, and write it in the box. " +
+    "Mommy and Daddy, please repeat these exercises with your child, a few times during the next week, " +
+    "until your child can do it all by themselves, automatically. Just a few minutes every day works best! " +
+    "You can also draw your own number lines on paper and make up new sums together.";
+
+  say(summaryText, () => {
+    document.getElementById('finishBtn').style.display = 'block';
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════════════════
+function goToResults(){
+  setProgress(100);
+  showScene('results');
+  document.getElementById('parentMessage').innerHTML = `
+    <strong style="color:#E65100;font-size:1.1em">📚 Note for Parents:</strong><br><br>
+    Please do regular <strong>revision</strong> of this video with your child until they can do number line addition <strong>without any help</strong>.<br><br>
+    Encourage your child to:<br>
+    • Always start counting from <strong>zero</strong> to the first number (one big blue jump)<br>
+    • Then count on with small pink hops<br>
+    • Circle the final answer in pink<br><br>
+    Practising every day for a few minutes works best! 🌟
+  `;
+  say("Excellent work today! Mommy and Daddy, please do regular revision of this video with your child, until they can do it all by themselves. Practice every day for a few minutes works best! Well done!");
+}
+
+// Stop speech if user closes/navigates away
+window.addEventListener('beforeunload', () => {
+  speechSynthesis.cancel();
+});
+</script>
+
+
+<div id="screenity-ui"><div class="screenity-shadow-dom"><div><div class="screenity-scrollbar"></div><div class="screenity-scrollbar"></div></div><style type="text/css">
+			#screenity-ui, #screenity-ui div {
+				background-color: unset;
+				padding: unset;
+				width: unset;
+				box-shadow: unset;
+				display: unset;
+				margin: unset;
+				border-radius: unset;
+			}
+			.screenity-outline {
+				position: absolute;
+				z-index: 99999999999;
+				border: 2px solid #3080F8;
+				outline-offset: -2px;
+				pointer-events: none;
+				border-radius: 5px!important;
+			}
+		.screenity-blur {
+			filter: blur(10px)!important;
+		}
+			.screenity-shadow-dom * {
+				transition: unset;
+			}
+			.screenity-shadow-dom .TooltipContent {
+  border-radius: 30px!important;
+	background-color: #29292F!important;
+  padding: 10px 15px!important;
+  font-size: 12px;
+	margin-bottom: 10px!important;
+	bottom: 100px;
+  line-height: 1;
+	font-family: 'Satoshi-Medium', sans-serif;
+	z-index: 99999999!important;
+  color: #FFF;
+  box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px!important;
+  user-select: none;
+	transition: opacity 0.3 ease-in-out;
+  will-change: transform, opacity;
+	animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.screenity-shadow-dom .hide-tooltip {
+	display: none!important;
+}
+
+.screenity-shadow-dom .tooltip-tall {
+	margin-bottom: 20px;
+}
+
+.screenity-shadow-dom .tooltip-small {
+	margin-bottom: 5px;
+}
+
+.screenity-shadow-dom .TooltipContent[data-state='delayed-open'][data-side='top'] {
+	animation-name: screenity-slideDownAndFade;
+}
+.screenity-shadow-dom .TooltipContent[data-state='delayed-open'][data-side='right'] {
+  animation-name: screenity-slideLeftAndFade;
+}
+.screenity-shadow-dom.TooltipContent[data-state='delayed-open'][data-side='bottom'] {
+  animation-name: screenity-slideUpAndFade;
+}
+.screenity-shadow-dom.TooltipContent[data-state='delayed-open'][data-side='left'] {
+  animation-name: screenity-slideRightAndFade;
+}
+
+@keyframes screenity-slideUpAndFade {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes screenity-slideRightAndFade {
+  from { opacity: 0; transform: translateX(-2px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes screenity-slideDownAndFade {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes screenity-slideLeftAndFade {
+  from { opacity: 0; transform: translateX(2px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+#screenity-ui [data-radix-popper-content-wrapper] { z-index: 999999999999!important; }
+
+.screenity-shadow-dom .CanvasContainer {
+	position: fixed;
+	pointer-events: all!important;
+	top: 0px!important;
+	left: 0px!important;
+	z-index: 99999999999!important;
+}
+.screenity-shadow-dom .canvas {
+	position: fixed;
+	top: 0px!important;
+	left: 0px!important;
+	z-index: 99999999999!important;
+	background: transparent!important;
+}
+.screenity-shadow-dom .canvas-container {
+	top: 0px!important;
+	left: 0px!important;
+	z-index: 99999999999;
+	position: fixed!important;
+	background: transparent!important;
+}
+
+.ScreenityDropdownMenuContent {
+	z-index: 99999999999!important;
+  min-width: 200px;
+  background-color: white;
+  margin-top: 4px;
+  margin-right: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-radius: 15px;
+  font-family: 'Satoshi-Medium', sans-serif;
+  color: #29292F;
+  box-shadow: 0px 10px 38px -10px rgba(22, 23, 24, 0.35),
+    0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+.ScreenityDropdownMenuContent[data-side="top"] {
+  animation-name: screenity-slideDownAndFade;
+}
+.ScreenityDropdownMenuContent[data-side="right"] {
+  animation-name: screenity-slideLeftAndFade;
+}
+.ScreenityDropdownMenuContent[data-side="bottom"] {
+  animation-name: screenity-slideUpAndFade;
+}
+.ScreenityDropdownMenuContent[data-side="left"] {
+  animation-name: screenity-slideRightAndFade;
+}
+.ScreenityItemIndicator {
+  position: absolute;
+  right: 12px;
+  width: 18px;
+  height: 18px;
+  background: #3080F8;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ScreenityDropdownMenuItem,
+.ScreenityDropdownMenuRadioItem {
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 5px;
+  position: relative;
+  padding-left: 22px;
+  padding-right: 22px;
+  user-select: none;
+  outline: none;
+}
+.ScreenityDropdownMenuItem:hover {
+    background-color: #F6F7FB !important;
+    cursor: pointer;
+}
+.ScreenityDropdownMenuItem[data-disabled] {
+  color: #6E7684 !important;
+  cursor: not-allowed;
+  background-color: #F6F7FB !important;
+}
+
+</style></div></div></body></html>
